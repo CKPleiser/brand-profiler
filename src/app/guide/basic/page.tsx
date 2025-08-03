@@ -34,6 +34,9 @@ export default function BasicGuidePage() {
     try {
       const guide = await generateBasicGuide(data)
       setBasicGuide(guide)
+      
+      // Save the basic guide to localStorage for reuse
+      localStorage.setItem('basicGuide', JSON.stringify(guide))
     } catch (error) {
       console.error('Failed to generate guide:', error)
     } finally {
@@ -159,7 +162,7 @@ export default function BasicGuidePage() {
                   Upgrade to get detailed messaging pillars, visual guidelines, do/don't examples, and AI prompts.
                 </p>
                 <Button asChild>
-                  <a href="/guide/preview">
+                  <a href="/guide/preview?skip_generation=true">
                     <Crown className="w-4 h-4 mr-2" />
                     Upgrade Now
                   </a>
@@ -237,7 +240,7 @@ export default function BasicGuidePage() {
               </div>
 
               <Button className="w-full" asChild>
-                <a href="/guide/preview">
+                <a href="/guide/preview?skip_generation=true">
                   <Crown className="w-4 h-4 mr-2" />
                   Choose Your Plan
                 </a>

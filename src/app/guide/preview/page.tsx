@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -9,6 +10,7 @@ import { BrandFormData, BasicGuide, CompleteGuide } from '@/types'
 import { generateBasicGuide, generateCompleteGuide, PRICING_TIERS } from '@/lib/guide-generator'
 
 export default function GuidePreviewPage() {
+  const searchParams = useSearchParams()
   const [brandData, setBrandData] = useState<BrandFormData | null>(null)
   const [preview, setPreview] = useState<BasicGuide | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -16,12 +18,31 @@ export default function GuidePreviewPage() {
   const [isGenerating, setIsGenerating] = useState(false)
 
   useEffect(() => {
+    const skipGeneration = searchParams.get('skip_generation') === 'true'
+    
     // Load brand data from localStorage
     const saved = localStorage.getItem('brandFormData')
     if (saved) {
       try {
         const parsed = JSON.parse(saved)
         setBrandData(parsed)
+        
+        if (skipGeneration) {
+          // Try to load existing basic guide from localStorage
+          const savedBasicGuide = localStorage.getItem('basicGuide')
+          if (savedBasicGuide) {
+            try {
+              const basicGuide = JSON.parse(savedBasicGuide)
+              setPreview(basicGuide)
+              setIsLoading(false)
+              return
+            } catch (e) {
+              console.error('Failed to parse saved basic guide:', e)
+            }
+          }
+        }
+        
+        // Generate new preview if not skipping or no saved guide found
         generatePreview(parsed)
       } catch (e) {
         console.error('Failed to parse saved data:', e)
@@ -30,7 +51,7 @@ export default function GuidePreviewPage() {
     } else {
       setIsLoading(false)
     }
-  }, [])
+  }, [searchParams])
 
   const generatePreview = async (data: BrandFormData) => {
     try {
