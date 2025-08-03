@@ -3,6 +3,8 @@ import Stripe from 'stripe'
 import { stripe, PRICING_CONFIG, PricingTier } from '@/lib/stripe'
 import { headers } from 'next/headers'
 
+// Fixed headers() async call for NextJS 15 compatibility
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
