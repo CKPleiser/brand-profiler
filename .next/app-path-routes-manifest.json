@@ -2,9 +2,9 @@
   "/_not-found/page": "/_not-found",
   "/api/create-checkout-session/route": "/api/create-checkout-session",
   "/api/webhook/stripe/route": "/api/webhook/stripe",
-  "/guide/basic/page": "/guide/basic",
-  "/guide/success/page": "/guide/success",
-  "/guide/preview/page": "/guide/preview",
   "/guide/complete/page": "/guide/complete",
-  "/page": "/"
+  "/guide/preview/page": "/guide/preview",
+  "/page": "/",
+  "/guide/basic/page": "/guide/basic",
+  "/guide/success/page": "/guide/success"
 }

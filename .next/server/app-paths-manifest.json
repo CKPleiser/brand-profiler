@@ -2,9 +2,9 @@
   "/_not-found/page": "app/_not-found/page.js",
   "/api/create-checkout-session/route": "app/api/create-checkout-session/route.js",
   "/api/webhook/stripe/route": "app/api/webhook/stripe/route.js",
-  "/guide/basic/page": "app/guide/basic/page.js",
-  "/guide/success/page": "app/guide/success/page.js",
-  "/guide/preview/page": "app/guide/preview/page.js",
   "/guide/complete/page": "app/guide/complete/page.js",
-  "/page": "app/page.js"
+  "/guide/preview/page": "app/guide/preview/page.js",
+  "/page": "app/page.js",
+  "/guide/basic/page": "app/guide/basic/page.js",
+  "/guide/success/page": "app/guide/success/page.js"
 }
