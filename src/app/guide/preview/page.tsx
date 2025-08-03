@@ -63,17 +63,23 @@ export default function GuidePreviewPage() {
       })
 
       if (!response.ok) {
-        throw new Error('Failed to create checkout session')
+        const errorData = await response.json()
+        throw new Error(errorData.details || 'Failed to create checkout session')
       }
 
       const { url } = await response.json()
+      
+      if (!url) {
+        throw new Error('No checkout URL received')
+      }
       
       // Redirect to Stripe checkout
       window.location.href = url
       
     } catch (error) {
       console.error('Purchase failed:', error)
-      alert('Payment failed. Please try again.')
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+      alert(`Payment failed: ${errorMessage}. Please try again.`)
     } finally {
       setIsGenerating(false)
     }

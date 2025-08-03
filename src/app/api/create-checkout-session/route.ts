@@ -40,15 +40,7 @@ export async function POST(request: NextRequest) {
       payment_method_types: ['card'],
       line_items: [
         {
-          price_data: {
-            currency: 'usd',
-            product_data: {
-              name: config.name,
-              description: config.description,
-              images: [], // Add product images if available
-            },
-            unit_amount: config.amount,
-          },
+          price: config.price_id,
           quantity: 1,
         },
       ],
@@ -92,8 +84,15 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Stripe checkout error:', error)
+    
+    // More detailed error message for debugging
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    
     return NextResponse.json(
-      { error: 'Failed to create checkout session' },
+      { 
+        error: 'Failed to create checkout session',
+        details: errorMessage
+      },
       { status: 500 }
     )
   }
