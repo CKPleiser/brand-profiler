@@ -1,0 +1,165 @@
+{
+  "name": "Brand Profiler - Basic Guide Generation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "basic-guide",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-basic",
+      "name": "Webhook - Basic Guide",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "basic-guide"
+    },
+    {
+      "parameters": {
+        "model": "gpt-4",
+        "messages": {
+          "messageType": "multipleMessages",
+          "values": [
+            {
+              "role": "system",
+              "content": "You are a brand strategist creating a basic brand guide. Analyze the provided brand information and create a concise but valuable brand analysis. Always respond with valid JSON only."
+            },
+            {
+              "role": "user", 
+              "content": "Brand Information:\n- Name: {{ $json.brandName }}\n- Website: {{ $json.domain }}\n- Description: {{ $json.description }}\n- Target Audience: {{ $json.audience }}\n- Voice Traits: {{ $json.voiceTraits }}\n- Language: {{ $json.language }}\n\nCreate a JSON response with the following structure:\n{\n  \"tone_summary\": \"2-3 sentences describing the brand's communication tone and approach\",\n  \"key_traits\": [\"trait1\", \"trait2\", \"trait3\", \"trait4\", \"trait5\"],\n  \"brand_personality\": \"2-3 sentences describing the brand's personality and positioning\",\n  \"content_direction\": \"2-3 sentences with specific content guidance and messaging direction\"\n}\n\nRequirements:\n- Keep responses concise but valuable\n- Focus on actionable insights\n- Tailor analysis to the target audience\n- Ensure tone_summary reflects the voice traits\n- Make key_traits specific and relevant\n- Provide clear content direction\n\nRespond only with valid JSON."
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.7,
+          "maxTokens": 1500
+        }
+      },
+      "id": "openai-basic",
+      "name": "OpenAI - Generate Basic Guide",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1,
+      "position": [460, 300],
+      "credentials": {
+        "openAiApi": {
+          "id": "openai-credentials",
+          "name": "OpenAI API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse the OpenAI response and structure it properly\nconst openaiResponse = $input.first().json.message.content;\n\ntry {\n  const parsedResponse = JSON.parse(openaiResponse);\n  \n  return {\n    success: true,\n    data: {\n      tone_summary: parsedResponse.tone_summary,\n      key_traits: parsedResponse.key_traits,\n      brand_personality: parsedResponse.brand_personality,\n      content_direction: parsedResponse.content_direction\n    },\n    tier: 'basic',\n    generated_at: new Date().toISOString()\n  };\n} catch (error) {\n  return {\n    success: false,\n    error: 'Failed to parse OpenAI response',\n    details: error.message,\n    raw_response: openaiResponse\n  };\n}"
+      },
+      "id": "format-response",
+      "name": "Format Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}"
+      },
+      "id": "response-basic",
+      "name": "Webhook Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Log the error and return a fallback response\nconst webhookData = $('Webhook - Basic Guide').first().json;\n\nreturn {\n  success: false,\n  error: 'OpenAI generation failed',\n  fallback_data: {\n    tone_summary: `${webhookData.brandName} communicates with a ${webhookData.voiceTraits[0].toLowerCase()} tone, focusing on delivering value to ${webhookData.audience}.`,\n    key_traits: webhookData.voiceTraits || ['Professional', 'Reliable', 'Clear', 'Focused', 'Valuable'],\n    brand_personality: `${webhookData.brandName} is positioned as a trusted partner in ${webhookData.description}, emphasizing reliability and expertise.`,\n    content_direction: `Content should emphasize practical value, clear communication, and direct relevance to ${webhookData.audience} needs.`\n  },\n  tier: 'basic',\n  generated_at: new Date().toISOString()\n};"
+      },
+      "id": "error-fallback",
+      "name": "Error Fallback",
+      "type": "n8n-nodes-base.code", 
+      "typeVersion": 1,
+      "position": [680, 480]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}"
+      },
+      "id": "response-error",
+      "name": "Error Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [900, 480]
+    }
+  ],
+  "connections": {
+    "Webhook - Basic Guide": {
+      "main": [
+        [
+          {
+            "node": "OpenAI - Generate Basic Guide",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI - Generate Basic Guide": {
+      "main": [
+        [
+          {
+            "node": "Format Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ],
+      "error": [
+        [
+          {
+            "node": "Error Fallback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Response": {
+      "main": [
+        [
+          {
+            "node": "Webhook Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Fallback": {
+      "main": [
+        [
+          {
+            "node": "Error Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "basic-guide-v1",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": [
+    {
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "updatedAt": "2024-01-01T00:00:00.000Z",
+      "id": "brand-profiler",
+      "name": "Brand Profiler"
+    }
+  ]
+}

@@ -1,0 +1,297 @@
+{
+  "name": "Brand Profiler - Premium Guide Generation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "premium-guide",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-premium",
+      "name": "Webhook - Premium Guide",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "premium-guide"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "tier-complete",
+              "leftValue": "={{ $json.tier }}",
+              "rightValue": "complete",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "check-tier",
+      "name": "Check Tier",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4",
+        "messages": {
+          "messageType": "multipleMessages",
+          "values": [
+            {
+              "role": "system",
+              "content": "You are a senior brand strategist creating a comprehensive Complete brand guide with all features. This is the premium tier that includes everything plus advanced features. Always respond with valid JSON only."
+            },
+            {
+              "role": "user",
+              "content": "Brand Information:\n- Name: {{ $json.brandName }}\n- Website: {{ $json.domain }}\n- Description: {{ $json.description }}\n- Target Audience: {{ $json.audience }}\n- Voice Traits: {{ $json.voiceTraits }}\n- Language: {{ $json.language }}\n\nCreate a JSON response with this comprehensive structure:\n{\n  \"tone_summary\": \"Detailed 4-5 sentence analysis of communication tone with nuances\",\n  \"key_traits\": [\"trait1\", \"trait2\", \"trait3\", \"trait4\", \"trait5\", \"trait6\", \"trait7\"],\n  \"brand_personality\": \"Comprehensive personality analysis with archetype, values, and brand character\",\n  \"primary_audience\": \"Detailed audience personas with demographics, psychographics, and behavioral insights\",\n  \"content_direction\": \"Complete content strategy framework with themes, topics, messaging pillars, and content types\",\n  \"voice_guidelines\": {\n    \"formality_level\": \"Professional/Casual/Conversational\",\n    \"emotional_tone\": \"Detailed emotional approach with examples\",\n    \"communication_style\": \"Comprehensive style guidelines with specific language patterns\",\n    \"dos\": [\"Do use...\", \"Do emphasize...\", \"Do maintain...\", \"Do consider...\", \"Do leverage...\"],\n    \"donts\": [\"Don't use...\", \"Don't sound...\", \"Don't ignore...\", \"Don't overuse...\", \"Don't neglect...\"]\n  },\n  \"messaging_pillars\": [\n    {\n      \"title\": \"Pillar 1 Title\",\n      \"description\": \"What this pillar represents\",\n      \"key_messages\": [\"Message 1\", \"Message 2\", \"Message 3\", \"Message 4\"],\n      \"content_themes\": [\"Theme 1\", \"Theme 2\", \"Theme 3\"]\n    },\n    {\n      \"title\": \"Pillar 2 Title\",\n      \"description\": \"What this pillar represents\",\n      \"key_messages\": [\"Message 1\", \"Message 2\", \"Message 3\", \"Message 4\"],\n      \"content_themes\": [\"Theme 1\", \"Theme 2\", \"Theme 3\"]\n    },\n    {\n      \"title\": \"Pillar 3 Title\",\n      \"description\": \"What this pillar represents\",\n      \"key_messages\": [\"Message 1\", \"Message 2\", \"Message 3\", \"Message 4\"],\n      \"content_themes\": [\"Theme 1\", \"Theme 2\", \"Theme 3\"]\n    }\n  ],\n  \"visual_guidelines\": {\n    \"color_recommendations\": \"Suggested color palette approach with rationale\",\n    \"typography_style\": \"Font personality and hierarchy recommendations\",\n    \"imagery_mood\": \"Visual style and imagery direction\",\n    \"design_principles\": [\"Principle 1\", \"Principle 2\", \"Principle 3\", \"Principle 4\"]\n  },\n  \"content_strategy\": {\n    \"content_types\": [\"Blog posts\", \"Social media\", \"Email\", \"Website copy\", \"Marketing materials\"],\n    \"content_themes\": [\"Theme 1\", \"Theme 2\", \"Theme 3\", \"Theme 4\"],\n    \"content_calendar_suggestions\": \"Recommendations for content planning and scheduling\"\n  }\n}\n\nRequirements:\n- Provide comprehensive, actionable guidance\n- Include specific examples and recommendations\n- Ensure all sections work together cohesively\n- Make the guide immediately useful for content teams\n\nRespond only with valid JSON."
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.7,
+          "maxTokens": 4000
+        }
+      },
+      "id": "openai-complete",
+      "name": "OpenAI - Complete Guide",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1,
+      "position": [680, 200],
+      "credentials": {
+        "openAiApi": {
+          "id": "openai-credentials",
+          "name": "OpenAI API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "gpt-4",
+        "messages": {
+          "messageType": "multipleMessages",
+          "values": [
+            {
+              "role": "system",
+              "content": "You are a senior brand strategist creating a comprehensive Core brand guide. Analyze the brand information and create detailed guidelines that build upon basic brand analysis. Always respond with valid JSON only."
+            },
+            {
+              "role": "user",
+              "content": "Brand Information:\n- Name: {{ $json.brandName }}\n- Website: {{ $json.domain }}\n- Description: {{ $json.description }}\n- Target Audience: {{ $json.audience }}\n- Voice Traits: {{ $json.voiceTraits }}\n- Language: {{ $json.language }}\n\nCreate a JSON response with this structure:\n{\n  \"tone_summary\": \"Detailed 3-4 sentence analysis of communication tone\",\n  \"key_traits\": [\"trait1\", \"trait2\", \"trait3\", \"trait4\", \"trait5\", \"trait6\"],\n  \"brand_personality\": \"Comprehensive 4-5 sentence personality analysis with archetype identification\",\n  \"primary_audience\": \"Detailed audience description with demographics and psychographics\",\n  \"content_direction\": \"Specific content strategy with themes, topics, and messaging pillars\",\n  \"voice_guidelines\": {\n    \"formality_level\": \"Professional/Casual/Conversational\",\n    \"emotional_tone\": \"Description of emotional approach\",\n    \"communication_style\": \"Specific style guidelines\",\n    \"dos\": [\"Do use...\", \"Do emphasize...\", \"Do maintain...\"],\n    \"donts\": [\"Don't use...\", \"Don't sound...\", \"Don't ignore...\"]\n  },\n  \"messaging_pillars\": [\n    {\n      \"title\": \"Pillar 1 Title\",\n      \"description\": \"What this pillar represents\",\n      \"key_messages\": [\"Message 1\", \"Message 2\", \"Message 3\"]\n    },\n    {\n      \"title\": \"Pillar 2 Title\",\n      \"description\": \"What this pillar represents\",\n      \"key_messages\": [\"Message 1\", \"Message 2\", \"Message 3\"]\n    },\n    {\n      \"title\": \"Pillar 3 Title\",\n      \"description\": \"What this pillar represents\",\n      \"key_messages\": [\"Message 1\", \"Message 2\", \"Message 3\"]\n    }\n  ]\n}\n\nRequirements:\n- Provide actionable, specific guidance\n- Include industry-relevant insights\n- Tailor all content to the target audience\n- Ensure consistency across all elements\n- Make guidelines practical for content creators\n\nRespond only with valid JSON."
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.7,
+          "maxTokens": 3000
+        }
+      },
+      "id": "openai-core",
+      "name": "OpenAI - Core Guide",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1,
+      "position": [680, 400],
+      "credentials": {
+        "openAiApi": {
+          "id": "openai-credentials",
+          "name": "OpenAI API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Generate AI prompt for Complete guide\nconst webhookData = $('Webhook - Premium Guide').first().json;\nconst guideData = $input.first().json.message.content;\n\ntry {\n  const parsedGuide = JSON.parse(guideData);\n  \n  // Create the AI prompt for content creation\n  const aiPrompt = `You are a content creator for ${webhookData.brandName}. ${parsedGuide.tone_summary} ${parsedGuide.brand_personality}\n\nWhen creating content:\n\nTone & Voice:\n- ${parsedGuide.voice_guidelines.communication_style}\n- ${parsedGuide.voice_guidelines.emotional_tone}\n- Formality: ${parsedGuide.voice_guidelines.formality_level}\n\nKey Messaging:\n- ${parsedGuide.messaging_pillars[0].title}: ${parsedGuide.messaging_pillars[0].description}\n- ${parsedGuide.messaging_pillars[1].title}: ${parsedGuide.messaging_pillars[1].description}\n- ${parsedGuide.messaging_pillars[2].title}: ${parsedGuide.messaging_pillars[2].description}\n\nTarget Audience: ${parsedGuide.primary_audience}\n\nContent Direction: ${parsedGuide.content_direction}\n\nDO: ${parsedGuide.voice_guidelines.dos[0]}, ${parsedGuide.voice_guidelines.dos[1]}, ${parsedGuide.voice_guidelines.dos[2]}\nDON'T: ${parsedGuide.voice_guidelines.donts[0]}, ${parsedGuide.voice_guidelines.donts[1]}, ${parsedGuide.voice_guidelines.donts[2]}\n\nAlways maintain the brand's ${parsedGuide.key_traits[0]}, ${parsedGuide.key_traits[1]}, and ${parsedGuide.key_traits[2]} characteristics in all communications.`;\n\n  // Add AI prompt to the guide data\n  parsedGuide.ai_prompt = aiPrompt;\n  \n  return {\n    success: true,\n    data: parsedGuide,\n    tier: 'complete',\n    session_id: webhookData.stripeSessionId,\n    customer_email: webhookData.customerEmail,\n    generated_at: new Date().toISOString()\n  };\n} catch (error) {\n  return {\n    success: false,\n    error: 'Failed to parse Complete guide response',\n    details: error.message,\n    raw_response: guideData\n  };\n}"
+      },
+      "id": "format-complete",
+      "name": "Format Complete Guide",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [900, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Format Core guide response\nconst webhookData = $('Webhook - Premium Guide').first().json;\nconst guideData = $input.first().json.message.content;\n\ntry {\n  const parsedGuide = JSON.parse(guideData);\n  \n  return {\n    success: true,\n    data: parsedGuide,\n    tier: 'core',\n    session_id: webhookData.stripeSessionId,\n    customer_email: webhookData.customerEmail,\n    generated_at: new Date().toISOString()\n  };\n} catch (error) {\n  return {\n    success: false,\n    error: 'Failed to parse Core guide response',\n    details: error.message,\n    raw_response: guideData\n  };\n}"
+      },
+      "id": "format-core",
+      "name": "Format Core Guide",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [900, 400]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}"
+      },
+      "id": "response-complete",
+      "name": "Complete Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1120, 200]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}"
+      },
+      "id": "response-core",
+      "name": "Core Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1120, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Error fallback for premium guides\nconst webhookData = $('Webhook - Premium Guide').first().json;\n\nconst fallbackGuide = {\n  tone_summary: `${webhookData.brandName} communicates with a ${webhookData.voiceTraits[0].toLowerCase()} and ${webhookData.voiceTraits[1].toLowerCase()} tone, focusing on delivering exceptional value to ${webhookData.audience}.`,\n  key_traits: webhookData.voiceTraits.concat(['Reliable', 'Expert']),\n  brand_personality: `${webhookData.brandName} is positioned as a trusted industry leader, emphasizing expertise and customer success.`,\n  primary_audience: webhookData.audience,\n  content_direction: `Content should emphasize practical value, industry expertise, and direct relevance to ${webhookData.audience} challenges and goals.`,\n  voice_guidelines: {\n    formality_level: 'Professional',\n    emotional_tone: 'Confident and supportive',\n    communication_style: 'Clear, authoritative, and helpful',\n    dos: ['Use industry terminology', 'Emphasize expertise', 'Maintain professionalism'],\n    donts: ['Use overly casual language', 'Make unsupported claims', 'Ignore audience needs']\n  },\n  messaging_pillars: [\n    {\n      title: 'Expertise & Authority',\n      description: 'Demonstrates deep industry knowledge and thought leadership',\n      key_messages: ['Industry expertise', 'Proven track record', 'Thought leadership']\n    },\n    {\n      title: 'Customer Success',\n      description: 'Focus on delivering measurable value and results',\n      key_messages: ['Customer results', 'Proven ROI', 'Success stories']\n    },\n    {\n      title: 'Innovation & Growth',\n      description: 'Commitment to continuous improvement and innovation',\n      key_messages: ['Cutting-edge solutions', 'Future-focused', 'Continuous innovation']\n    }\n  ]\n};\n\n// Add AI prompt for Complete tier\nif (webhookData.tier === 'complete') {\n  fallbackGuide.ai_prompt = `You are a content creator for ${webhookData.brandName}. Maintain a ${webhookData.voiceTraits[0].toLowerCase()} and ${webhookData.voiceTraits[1].toLowerCase()} tone while emphasizing expertise and value for ${webhookData.audience}.`;\n  \n  fallbackGuide.visual_guidelines = {\n    color_recommendations: 'Professional color palette with primary brand colors',\n    typography_style: 'Clean, readable fonts that convey professionalism',\n    imagery_mood: 'Professional, clean, and industry-relevant',\n    design_principles: ['Clarity', 'Professionalism', 'Consistency', 'Accessibility']\n  };\n  \n  fallbackGuide.content_strategy = {\n    content_types: ['Blog posts', 'Case studies', 'White papers', 'Social media', 'Email campaigns'],\n    content_themes: ['Industry insights', 'Customer success', 'Best practices', 'Innovation'],\n    content_calendar_suggestions: 'Regular thought leadership content with customer success stories and industry insights'\n  };\n}\n\nreturn {\n  success: false,\n  error: 'OpenAI generation failed - using fallback',\n  data: fallbackGuide,\n  tier: webhookData.tier,\n  session_id: webhookData.stripeSessionId,\n  customer_email: webhookData.customerEmail,\n  generated_at: new Date().toISOString()\n};"
+      },
+      "id": "error-fallback-premium",
+      "name": "Premium Error Fallback",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [900, 600]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}"
+      },
+      "id": "response-error-premium",
+      "name": "Error Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1120, 600]
+    }
+  ],
+  "connections": {
+    "Webhook - Premium Guide": {
+      "main": [
+        [
+          {
+            "node": "Check Tier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Tier": {
+      "main": [
+        [
+          {
+            "node": "OpenAI - Complete Guide",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "OpenAI - Core Guide",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI - Complete Guide": {
+      "main": [
+        [
+          {
+            "node": "Format Complete Guide",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ],
+      "error": [
+        [
+          {
+            "node": "Premium Error Fallback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI - Core Guide": {
+      "main": [
+        [
+          {
+            "node": "Format Core Guide",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ],
+      "error": [
+        [
+          {
+            "node": "Premium Error Fallback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Complete Guide": {
+      "main": [
+        [
+          {
+            "node": "Complete Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Core Guide": {
+      "main": [
+        [
+          {
+            "node": "Core Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Premium Error Fallback": {
+      "main": [
+        [
+          {
+            "node": "Error Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "premium-guide-v1",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": [
+    {
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "updatedAt": "2024-01-01T00:00:00.000Z",
+      "id": "brand-profiler",
+      "name": "Brand Profiler"
+    }
+  ]
+}
