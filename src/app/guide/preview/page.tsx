@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -9,7 +9,7 @@ import { Sparkles, Download, Check, ArrowLeft, CreditCard } from 'lucide-react'
 import { BrandFormData, BasicGuide, CompleteGuide } from '@/types'
 import { generateBasicGuide, generateCompleteGuide, PRICING_TIERS } from '@/lib/guide-generator'
 
-export default function GuidePreviewPage() {
+function GuidePreviewContent() {
   const searchParams = useSearchParams()
   const [brandData, setBrandData] = useState<BrandFormData | null>(null)
   const [preview, setPreview] = useState<BasicGuide | null>(null)
@@ -327,5 +327,21 @@ export default function GuidePreviewPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function GuidePreviewPage() {
+  return (
+    <Suspense fallback={
+      <div className="container mx-auto px-4 py-16 max-w-4xl">
+        <div className="text-center">
+          <Sparkles className="w-8 h-8 text-primary mx-auto mb-4 animate-spin" />
+          <h1 className="text-2xl font-bold mb-2">Loading...</h1>
+          <p className="text-muted-foreground">Preparing your brand guide</p>
+        </div>
+      </div>
+    }>
+      <GuidePreviewContent />
+    </Suspense>
   )
 }
