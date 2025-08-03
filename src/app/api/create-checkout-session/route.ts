@@ -34,6 +34,13 @@ export async function POST(request: NextRequest) {
     const headersList = await headers()
     const origin = headersList.get('origin') || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
     
+    // Validate email format if provided
+    const isValidEmail = (email: string) => {
+      return email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+    }
+    
+    const validatedEmail = userEmail && isValidEmail(userEmail) ? userEmail : undefined
+    
     // Create Stripe checkout session
     const sessionParams: Stripe.Checkout.SessionCreateParams = {
       mode: 'payment',
@@ -49,10 +56,14 @@ export async function POST(request: NextRequest) {
       metadata: {
         tier,
         brandName: brandData?.name || 'Unknown Brand',
-        userEmail: userEmail || '',
+        userEmail: validatedEmail || '',
         brandData: JSON.stringify(brandData),
       },
-      customer_email: userEmail,
+    }
+    
+    // Only set customer_email if we have a valid email
+    if (validatedEmail) {
+      sessionParams.customer_email = validatedEmail
     }
 
     // Apply promo code if provided
