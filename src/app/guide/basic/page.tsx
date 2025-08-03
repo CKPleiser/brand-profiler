@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -9,6 +10,7 @@ import { BrandFormData, BasicGuide } from '@/types'
 import { generateBasicGuide, PRICING_TIERS } from '@/lib/guide-generator'
 
 export default function BasicGuidePage() {
+  const router = useRouter()
   const [brandData, setBrandData] = useState<BrandFormData | null>(null)
   const [basicGuide, setBasicGuide] = useState<BasicGuide | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -42,6 +44,11 @@ export default function BasicGuidePage() {
     } finally {
       setIsLoading(false)
     }
+  }
+
+  const handleUpgrade = () => {
+    // Navigate to preview page with skip_generation parameter
+    router.push('/guide/preview?skip_generation=true')
   }
 
   if (isLoading) {
@@ -161,11 +168,9 @@ export default function BasicGuidePage() {
                 <p className="text-muted-foreground mb-4">
                   Upgrade to get detailed messaging pillars, visual guidelines, do/don't examples, and AI prompts.
                 </p>
-                <Button asChild>
-                  <a href="/guide/preview?skip_generation=true">
-                    <Crown className="w-4 h-4 mr-2" />
-                    Upgrade Now
-                  </a>
+                <Button onClick={handleUpgrade}>
+                  <Crown className="w-4 h-4 mr-2" />
+                  Upgrade Now
                 </Button>
               </div>
             </CardContent>
@@ -239,11 +244,9 @@ export default function BasicGuidePage() {
                 </ul>
               </div>
 
-              <Button className="w-full" asChild>
-                <a href="/guide/preview?skip_generation=true">
-                  <Crown className="w-4 h-4 mr-2" />
-                  Choose Your Plan
-                </a>
+              <Button className="w-full" onClick={handleUpgrade}>
+                <Crown className="w-4 h-4 mr-2" />
+                Choose Your Plan
               </Button>
 
               <div className="text-center text-xs text-muted-foreground">
