@@ -49,20 +49,31 @@ export default function GuidePreviewPage() {
     setIsGenerating(true)
     
     try {
-      // In production, this would call Stripe checkout
-      console.log('Creating Stripe checkout session for:', selectedTier)
+      // Create Stripe checkout session
+      const response = await fetch('/api/create-checkout-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          tier: selectedTier,
+          brandData,
+          userEmail: brandData.user_email,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to create checkout session')
+      }
+
+      const { url } = await response.json()
       
-      // For now, simulate successful payment and generate complete guide
-      const completeGuide = await generateCompleteGuide(brandData)
-      
-      // Store the complete guide
-      localStorage.setItem('completeGuide', JSON.stringify(completeGuide))
-      
-      // Redirect to success page
-      window.location.href = '/guide/complete'
+      // Redirect to Stripe checkout
+      window.location.href = url
       
     } catch (error) {
       console.error('Purchase failed:', error)
+      alert('Payment failed. Please try again.')
     } finally {
       setIsGenerating(false)
     }
@@ -223,7 +234,7 @@ export default function GuidePreviewPage() {
             <CardContent className="space-y-4">
               {/* Tier Selection */}
               <div className="space-y-3">
-                {PRICING_TIERS.map((tier) => (
+                {PRICING_TIERS.filter(tier => tier.type !== 'basic').map((tier) => (
                   <div
                     key={tier.type}
                     className={`border rounded-lg p-4 cursor-pointer transition-colors ${
@@ -231,7 +242,7 @@ export default function GuidePreviewPage() {
                         ? 'border-primary bg-primary/5'
                         : 'border-border hover:border-primary/50'
                     }`}
-                    onClick={() => tier.type !== 'basic' && setSelectedTier(tier.type as 'core' | 'complete')}
+                    onClick={() => setSelectedTier(tier.type as 'core' | 'complete')}
                   >
                     <div className="flex items-center justify-between mb-2">
                       <h3 className="font-semibold">{tier.name}</h3>

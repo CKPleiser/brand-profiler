@@ -158,11 +158,12 @@ export default function BasicGuidePage() {
                 <p className="text-muted-foreground mb-4">
                   Upgrade to get detailed messaging pillars, visual guidelines, do/don't examples, and AI prompts.
                 </p>
-                <div className="flex justify-center space-x-3">
-                  <Button variant="outline" asChild>
-                    <a href="/guide/preview">Compare Plans</a>
-                  </Button>
-                </div>
+                <Button asChild>
+                  <a href="/guide/preview">
+                    <Crown className="w-4 h-4 mr-2" />
+                    Upgrade Now
+                  </a>
+                </Button>
               </div>
             </CardContent>
           </Card>
