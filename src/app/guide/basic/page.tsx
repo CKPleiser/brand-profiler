@@ -14,6 +14,9 @@ export default function BasicGuidePage() {
   const [brandData, setBrandData] = useState<BrandFormData | null>(null)
   const [basicGuide, setBasicGuide] = useState<BasicGuide | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [showPricing, setShowPricing] = useState(false)
+  const [selectedTier, setSelectedTier] = useState<'core' | 'complete'>('complete')
+  const [isGenerating, setIsGenerating] = useState(false)
 
   useEffect(() => {
     // Load brand data from localStorage
@@ -47,8 +50,49 @@ export default function BasicGuidePage() {
   }
 
   const handleUpgrade = () => {
-    // Navigate to preview page with skip_generation parameter
-    router.push('/guide/preview?skip_generation=true')
+    setShowPricing(true)
+  }
+
+  const handlePurchase = async () => {
+    if (!brandData) return
+    
+    setIsGenerating(true)
+    
+    try {
+      // Create Stripe checkout session
+      const response = await fetch('/api/create-checkout-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          tier: selectedTier,
+          brandData,
+          userEmail: brandData.user_email,
+        }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.details || 'Failed to create checkout session')
+      }
+
+      const { url } = await response.json()
+      
+      if (!url) {
+        throw new Error('No checkout URL received')
+      }
+      
+      // Redirect to Stripe checkout
+      window.location.href = url
+      
+    } catch (error) {
+      console.error('Purchase failed:', error)
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+      alert(`Payment failed: ${errorMessage}. Please try again.`)
+    } finally {
+      setIsGenerating(false)
+    }
   }
 
   if (isLoading) {
@@ -275,6 +319,71 @@ export default function BasicGuidePage() {
           </Card>
         </div>
       </div>
+
+      {/* Pricing Modal */}
+      {showPricing && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-xl font-bold">Choose Your Plan</h2>
+                <button onClick={() => setShowPricing(false)} className="text-gray-500 hover:text-gray-700">
+                  ✕
+                </button>
+              </div>
+              
+              <div className="space-y-4">
+                {PRICING_TIERS.filter(tier => tier.type !== 'basic').map((tier) => (
+                  <div
+                    key={tier.type}
+                    className={`border rounded-lg p-4 cursor-pointer transition-colors ${
+                      selectedTier === tier.type
+                        ? 'border-primary bg-primary/5'
+                        : 'border-gray-200 hover:border-primary/50'
+                    }`}
+                    onClick={() => setSelectedTier(tier.type as 'core' | 'complete')}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="font-semibold">{tier.name}</h3>
+                      <span className="text-xl font-bold">${tier.price}</span>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-3">{tier.description}</p>
+                    <ul className="space-y-1">
+                      {tier.features.slice(0, 3).map((feature, index) => (
+                        <li key={index} className="flex items-center text-xs">
+                          <Check className="w-3 h-3 text-primary mr-2 flex-shrink-0" />
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="mt-6 space-y-4">
+                <Button 
+                  onClick={handlePurchase}
+                  disabled={isGenerating}
+                  className="w-full"
+                  size="lg"
+                >
+                  {isGenerating ? (
+                    'Processing...'
+                  ) : (
+                    <>
+                      Get {PRICING_TIERS.find(t => t.type === selectedTier)?.name} - ${PRICING_TIERS.find(t => t.type === selectedTier)?.price}
+                    </>
+                  )}
+                </Button>
+                
+                <p className="text-xs text-gray-500 text-center">
+                  Secure payment powered by Stripe • 30-day money-back guarantee
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
