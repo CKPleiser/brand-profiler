@@ -50,6 +50,7 @@ export default function BasicGuidePage() {
   }
 
   const handleUpgrade = () => {
+    // Show pricing modal for both sidebar and main content buttons
     setShowPricing(true)
   }
 
