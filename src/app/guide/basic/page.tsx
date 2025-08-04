@@ -124,9 +124,9 @@ export default function BasicGuidePage() {
 
   return (
     <>
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 relative overflow-hidden">
+      <div className="min-h-screen bg-slate-50 relative overflow-hidden">
         {/* Background Pattern */}
-        <div className="absolute inset-0 bg-wave-pattern opacity-20"></div>
+        <div className="absolute inset-0 bg-wave-pattern opacity-15"></div>
         
         <div className="relative z-10">
           <div className="container mx-auto px-4 py-8 max-w-7xl">
@@ -140,8 +140,8 @@ export default function BasicGuidePage() {
                   </a>
                 </Button>
                 <div>
-                  <h1 className="text-4xl md:text-5xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                    {brandData.name} Brand Guide
+                  <h1 className="text-4xl md:text-5xl font-bold text-slate-800">
+                    <span className="text-blue-700">{brandData.name}</span> Brand Guide
                   </h1>
                   <p className="text-xl text-slate-600 font-medium">Your free basic brand analysis</p>
                 </div>
@@ -156,10 +156,10 @@ export default function BasicGuidePage() {
               {/* Guide Content */}
               <div className="lg:col-span-2 space-y-8 animate-slide-up">
                 {/* Tone of Voice */}
-                <Card className="shadow-medium border-0 bg-white/80 backdrop-blur-sm card-hover">
+                <Card className="shadow-medium border-0 bg-white card-hover">
                   <CardHeader className="pb-4">
                     <CardTitle className="flex items-center text-xl font-bold text-slate-800">
-                      <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mr-3">
+                      <div className="w-10 h-10 bg-blue-700 rounded-xl flex items-center justify-center mr-3">
                         <Sparkles className="w-5 h-5 text-white" />
                       </div>
                       Tone of Voice Summary
@@ -171,7 +171,7 @@ export default function BasicGuidePage() {
                 </Card>
 
                 {/* Key Traits */}
-                <Card className="shadow-medium border-0 bg-white/80 backdrop-blur-sm card-hover">
+                <Card className="shadow-medium border-0 bg-white card-hover">
                   <CardHeader className="pb-4">
                     <CardTitle className="text-xl font-bold text-slate-800">Key Brand Traits</CardTitle>
                   </CardHeader>
@@ -190,7 +190,7 @@ export default function BasicGuidePage() {
                 </Card>
 
                 {/* Brand Personality */}
-                <Card className="shadow-medium border-0 bg-white/80 backdrop-blur-sm card-hover">
+                <Card className="shadow-medium border-0 bg-white card-hover">
                   <CardHeader className="pb-4">
                     <CardTitle className="text-xl font-bold text-slate-800">Brand Personality</CardTitle>
                   </CardHeader>
@@ -200,7 +200,7 @@ export default function BasicGuidePage() {
                 </Card>
 
                 {/* Voice Notes */}
-                <Card className="shadow-medium border-0 bg-white/80 backdrop-blur-sm card-hover">
+                <Card className="shadow-medium border-0 bg-white card-hover">
                   <CardHeader className="pb-4">
                     <CardTitle className="text-xl font-bold text-slate-800">Voice Guidelines</CardTitle>
                   </CardHeader>
@@ -210,7 +210,7 @@ export default function BasicGuidePage() {
                 </Card>
 
                 {/* Content Direction */}
-                <Card className="shadow-medium border-0 bg-white/80 backdrop-blur-sm card-hover">
+                <Card className="shadow-medium border-0 bg-white card-hover">
                   <CardHeader className="pb-4">
                     <CardTitle className="text-xl font-bold text-slate-800">Content Direction</CardTitle>
                   </CardHeader>
@@ -223,7 +223,7 @@ export default function BasicGuidePage() {
                 <Card className="border-0 bg-gradient-to-br from-blue-50 to-purple-50 shadow-large card-hover">
                   <CardContent className="pt-8 pb-8">
                     <div className="text-center">
-                      <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                      <div className="w-16 h-16 bg-amber-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
                         <Crown className="w-8 h-8 text-white" />
                       </div>
                       <h3 className="text-2xl font-bold text-slate-800 mb-3">Want More Detailed Guidelines?</h3>
@@ -232,7 +232,7 @@ export default function BasicGuidePage() {
                       </p>
                       <Button 
                         onClick={handleUpgrade}
-                        className="bg-gradient-primary hover:shadow-medium hover:scale-105 transition-all duration-300 rounded-xl px-8 py-3 text-lg font-semibold"
+                        className="bg-gradient-accent text-slate-800 hover:shadow-medium hover:scale-105 transition-all duration-300 rounded-xl px-8 py-3 text-lg font-semibold"
                       >
                         <Crown className="w-5 h-5 mr-2" />
                         Upgrade Now
@@ -312,7 +312,7 @@ export default function BasicGuidePage() {
                     </div>
 
                     <Button 
-                      className="w-full h-12 bg-gradient-primary hover:shadow-medium hover:scale-105 transition-all duration-300 rounded-xl text-lg font-semibold" 
+                      className="w-full h-12 bg-gradient-accent text-slate-800 hover:shadow-medium hover:scale-105 transition-all duration-300 rounded-xl text-lg font-semibold" 
                       onClick={handleUpgrade}
                     >
                       <Crown className="w-5 h-5 mr-2" />

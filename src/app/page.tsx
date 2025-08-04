@@ -123,30 +123,40 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 relative overflow-hidden">
+    <div className="min-h-screen bg-slate-50 relative overflow-hidden">
       {/* Background Pattern */}
-      <div className="absolute inset-0 bg-wave-pattern opacity-30"></div>
+      <div className="absolute inset-0 bg-wave-pattern opacity-20"></div>
       
       <div className="relative z-10">
         <div className="container mx-auto px-4 py-16 max-w-6xl">
           {/* Header */}
           <div className="text-center mb-16 animate-fade-in">
-            <div className="flex items-center justify-center mb-6">
-              <div className="relative">
-                <Sparkles className="w-12 h-12 text-blue-600 mr-4 animate-bounce-gentle" />
-                <div className="absolute inset-0 w-12 h-12 bg-blue-600 rounded-full opacity-20 animate-pulse-glow"></div>
-              </div>
-              <h1 className="text-5xl md:text-6xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                Brand Style Guide Generator
+            <div className="mb-8">
+              <h1 className="text-5xl md:text-7xl font-bold text-slate-800 mb-6 leading-tight">
+                Scale Design. Cut Costs.
+                <br />
+                <span className="text-blue-700">Stay On Brand.</span>
               </h1>
+              <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed font-medium">
+                Support your in-house team with a dedicated creatives-as-a-subscription service tailored for B2B marketers.
+                Get consistent, high-quality assets, from decks to launch graphics, with reliable turnaround, unlimited 
+                revisions and predictable costs.
+              </p>
+              <div className="mt-8">
+                <Button 
+                  className="bg-gradient-accent text-slate-800 hover:shadow-medium hover:scale-105 transition-all duration-300 rounded-xl border-0 text-lg font-semibold px-8 py-4 h-14"
+                  size="lg"
+                  onClick={() => {
+                    const element = document.querySelector('[data-brand-input]')
+                    if (element) {
+                      element.scrollIntoView({ behavior: 'smooth' })
+                    }
+                  }}
+                >
+                  Get Your Brand Guide
+                </Button>
+              </div>
             </div>
-            <p className="text-2xl text-slate-600 mb-4 font-medium">
-              AI-powered brand guidelines in minutes
-            </p>
-            <p className="text-lg text-slate-500 max-w-2xl mx-auto leading-relaxed">
-              Get professional tone of voice, brand personality, and visual direction 
-              crafted by AI and trusted by design professionals
-            </p>
             
             {/* Trust badges */}
             <div className="flex items-center justify-center mt-8 space-x-8 text-sm text-slate-400">
@@ -159,7 +169,7 @@ export default function HomePage() {
                 AI-Powered Analysis
               </div>
               <div className="flex items-center">
-                <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
+                <div className="w-2 h-2 bg-amber-500 rounded-full mr-2"></div>
                 Instant Download
               </div>
             </div>
@@ -167,7 +177,7 @@ export default function HomePage() {
 
           {!showForm ? (
             /* Initial Input */
-            <div className="max-w-2xl mx-auto animate-slide-up">
+            <div className="max-w-2xl mx-auto animate-slide-up" data-brand-input>
               <Card className="shadow-large border-0 bg-white/80 backdrop-blur-sm card-hover">
                 <CardHeader className="text-center pb-2">
                   <CardTitle className="text-2xl font-bold text-slate-800">Get Started</CardTitle>
@@ -217,7 +227,7 @@ export default function HomePage() {
                   <Button 
                     onClick={handleDetectBrand}
                     disabled={!inputValue.trim() || isLoading}
-                    className="w-full h-14 text-lg font-semibold bg-gradient-primary hover:shadow-medium hover:scale-105 transition-all duration-300 rounded-xl border-0"
+                    className="w-full h-14 text-lg font-semibold bg-gradient-accent text-slate-800 hover:shadow-medium hover:scale-105 transition-all duration-300 rounded-xl border-0"
                     size="lg"
                   >
                     {isLoading ? (
@@ -350,7 +360,7 @@ export default function HomePage() {
                     <Button 
                       onClick={handleFormSubmit}
                       disabled={!brandData.name || !brandData.description || isLoading}
-                      className="flex-1 h-12 bg-gradient-primary hover:shadow-medium hover:scale-105 transition-all duration-300 rounded-lg border-0 text-lg font-semibold"
+                      className="flex-1 h-12 bg-gradient-accent text-slate-800 hover:shadow-medium hover:scale-105 transition-all duration-300 rounded-lg border-0 text-lg font-semibold"
                       size="lg"
                     >
                       {isLoading ? (
@@ -373,9 +383,9 @@ export default function HomePage() {
 
           {/* Features */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-20 animate-fade-in">
-            <Card className="shadow-soft border-0 bg-white/60 backdrop-blur-sm card-hover group">
+            <Card className="shadow-soft border-0 bg-white card-hover group">
               <CardContent className="pt-8 pb-8 px-6 text-center">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                <div className="w-16 h-16 bg-blue-700 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
                   <FileText className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="font-bold text-lg text-slate-800 mb-3">Comprehensive Guidelines</h3>
@@ -385,9 +395,9 @@ export default function HomePage() {
               </CardContent>
             </Card>
 
-            <Card className="shadow-soft border-0 bg-white/60 backdrop-blur-sm card-hover group">
+            <Card className="shadow-soft border-0 bg-white card-hover group">
               <CardContent className="pt-8 pb-8 px-6 text-center">
-                <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                <div className="w-16 h-16 bg-amber-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
                   <Sparkles className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="font-bold text-lg text-slate-800 mb-3">AI-Powered Prompts</h3>
@@ -397,9 +407,9 @@ export default function HomePage() {
               </CardContent>
             </Card>
 
-            <Card className="shadow-soft border-0 bg-white/60 backdrop-blur-sm card-hover group">
+            <Card className="shadow-soft border-0 bg-white card-hover group">
               <CardContent className="pt-8 pb-8 px-6 text-center">
-                <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                <div className="w-16 h-16 bg-blue-700 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
                   <ArrowRight className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="font-bold text-lg text-slate-800 mb-3">Multiple Formats</h3>
